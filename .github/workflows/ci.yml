@@ -39,7 +39,7 @@ jobs:
       working-directory: ./frontend
       run: |
         npm ci
-        npm run start
+        npm run build
 
 
     - name: Cleanup processes
