@@ -24,6 +24,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
+    
 
     - name: Build backend
       working-directory: ./backend
@@ -46,11 +47,3 @@ jobs:
         npm run build
 
 
-    - name: Cleanup processes
-      if: always()
-      run: |
-        # Kill Node processes
-        pkill -f "node index.js" || true
-        pkill -f "nodemon" || true
-        # Clean Docker containers
-        docker-compose -f docker-compose.yml down
