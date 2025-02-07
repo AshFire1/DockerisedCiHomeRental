@@ -29,13 +29,13 @@ jobs:
       working-directory: ./backend
       run: |
         npm ci
-        npm run build
+        npm run start
 
     - name: Build frontend
       working-directory: ./frontend
       run: |
         npm ci
-        npm run build
+        npm run start
 
     - name: Start services with Docker Compose
       run: |
