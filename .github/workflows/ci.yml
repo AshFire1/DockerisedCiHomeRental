@@ -1,0 +1,52 @@
+name: MERN CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+
+    - name: Build backend
+      working-directory: ./backend
+      run: |
+        npm ci
+        npm run build
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: |
+        npm ci
+        npm run build
+
+    - name: Start services with Docker Compose
+      run: |
+        docker-compose -f docker-compose.yml up -d
+        timeout 120 bash -c 'while ! docker-compose -f docker-compose.yml logs backend | grep "Server running"; do sleep 5; done'
+
+    - name: Run basic health check
+      run: |
+        curl --retry 5 --retry-delay 10 --retry-connrefused http://localhost:5000/api/health
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker-compose -f docker-compose.yml down
