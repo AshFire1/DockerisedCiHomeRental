@@ -29,6 +29,7 @@ jobs:
       working-directory: ./backend
       run: |
         npm ci
+        npm install -g nodemon
         npm run start
 
     - name: Build frontend
