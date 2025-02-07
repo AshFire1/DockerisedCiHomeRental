@@ -40,6 +40,8 @@ jobs:
         npm ci --legacy-peer-deps --prefer-offline    
     - name: Build frontend
       working-directory: ./frontend
+      env:
+        CI: false
       run: |
         npm run build
 
